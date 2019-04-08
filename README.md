@@ -1,16 +1,16 @@
-# Fable 2.2 ~ Compiling script
+# F# tokens
 
 ## Installation
 
-> npm i
+> yarn
 
 Installs both `node_modules` and `paket references`.
 Generates `.paket/load/netstandard2.0/main.group.fsx` afterwards.
 
 ## Build
 
-> npx webpack
+> yarn webpack
 
 ## Run
 
-> npx webpack-dev-server
+> yarn webpack-dev-server
