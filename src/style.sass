@@ -1,0 +1,128 @@
+$line-number-width: 20px
+$primary: #3fc380
+
+@import "node_modules/bulma/bulma.sass"
+
+
+html, body, .column.is-two-thirds, #results
+  height: 100%
+  overflow-y: hidden
+
+body .columns:not(last-child)
+  height: calc(100% - #{$navbar-height})
+  margin-top: 0
+
+@media screen and (min-width: $tablet)
+  body .columns:not(last-child)
+    margin-bottom: 0
+
+main
+  border-top: 1px solid $dark
+
+#editor
+  display: flex
+  height: 100%
+  flex-direction: column
+  border-right: 1px solid $dark
+
+  #monaco
+    flex-grow: 1
+
+  #settings
+    .button
+      border-radius: 0
+
+#results
+  display: flex
+  flex-direction: column
+
+
+#tokens
+  flex-grow: 1
+
+#tokens .title, #details .title
+  margin: 1rem
+
+.line
+  padding: 10px
+  display: flex
+  align-items: center
+  justify-content: center
+  cursor: pointer
+
+  &:nth-child(even)
+    background-color: $white-bis
+    &.active
+      background-color: transparentize($primary, 0.5)
+    &:hover
+      background-color: lighten($primary, 10%)
+
+  &:nth-child(odd)
+    background-color: $white-ter
+    &.active
+      background-color: transparentize($primary, 0.5)
+    &:hover
+      background-color: lighten($primary, 10%)
+
+
+  .line-number
+    width: $line-number-width
+    display: inline-block
+    border-right: 1px solid $dark
+
+  .tokens
+    overflow-x: auto
+    overflow-y: hidden
+    width: calc(66vw - #{$column-gap} - #{$column-gap} - #{$line-number-width})
+    white-space: nowrap
+    margin-left: 5px
+    margin-top: 5px
+
+=tokenColor($name, $color, $isWhite: false)
+  .is-#{$name}, .tag.is-#{$name}
+    background-color: $color
+    @if $isWhite
+      color: $white
+
+    &:hover
+      background-color: darken($color, 5%)
+
+.token
+  display: inline-block
+  cursor: pointer
+  white-space: normal
+  height: 100%
+  overflow-y: hidden
+
+
++tokenColor(let, #6bb9f0, true)
++tokenColor(whitespace, rgb(236, 240, 241))
++tokenColor(ident, rgb(200, 247, 197))
++tokenColor(equals, #f15a22, true)
++tokenColor(int32, rgba(241, 231, 254, 1))
++tokenColor(char, rgba(241, 231, 254, 1))
++tokenColor(line_comment, rgba(135, 211, 124, 1))
+
+#details
+  flex: 0
+
+  .detail-container
+    overflow-x: auto
+    overflow-y: hidden
+    width: calc(66vw - #{$column-gap} - #{$column-gap} - #{$line-number-width})
+    white-space: nowrap
+
+  .title
+    margin-bottom: 30px
+
+  small
+    margin-left: 0.3rem
+
+  .detail
+    display: inline-block
+    border-right: 1px solid transparentize($dark, 0.25)
+    padding: 0.5rem
+    transition: 0.4s background
+
+    &.lit
+      background-color: $primary
