@@ -10,6 +10,7 @@ open Fable.React
 open Fable.React.Props
 open Elmish
 open Elmish.React
+open Elmish.HMR
 
 module Editor =
 
