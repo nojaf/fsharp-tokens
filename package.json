@@ -8,7 +8,9 @@
     "react-resize-detector": "^3.1.2"
   },
   "scripts": {
-    "postinstall": "node install.js"
+    "build": "webpack -p",
+    "start": "webpack-dev-server",
+    "postinstall": "paket restore && paket generate-load-scripts -f netstandard2.0 -t fsx"
   },
   "devDependencies": {
     "@babel/core": "7.2.2",
