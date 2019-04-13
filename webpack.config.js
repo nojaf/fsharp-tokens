@@ -140,7 +140,11 @@ module.exports = {
     hot: true,
     inline: true,
     historyApiFallback: CONFIG.historyApiFallback,
-    contentBase: CONFIG.contentBase
+    contentBase: CONFIG.contentBase,
+    host: "0.0.0.0",
+    watchOptions: {
+      poll: true
+    }
   },
   // - fable-loader: transforms F# into JS
   // - babel-loader: transforms JS to old syntax (compatible with old browsers)

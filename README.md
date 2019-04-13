@@ -20,3 +20,9 @@ Generates `.paket/load/netstandard2.0/main.group.fsx` afterwards.
 ## Run
 
 > yarn webpack-dev-server
+
+## Docker
+
+(in PowerShell)
+
+> docker run -it --rm -v "${PWD}:/app" -w "/app" -p "8080:8080"  nojaf/fable:2.2 sh
