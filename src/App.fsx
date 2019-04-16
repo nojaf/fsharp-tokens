@@ -123,7 +123,7 @@ let navbar =
                     [ str "Marksmanship" ] ] ]
           div [ Class "navbar-end" ]
             [ div [ Class "navbar-item" ]
-                [ a [ Href "https://github.com" ]
+                [ a [ Href "https://github.com/nojaf/fsharp-tokens" ]
                     [ button [ Class "button is-black" ]
                         [ span [ Class "icon" ]
                             [ i [ Class " fab fa-github" ]
