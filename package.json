@@ -10,7 +10,8 @@
   "scripts": {
     "build": "webpack -p",
     "start": "webpack-dev-server",
-    "postinstall": "paket restore && paket generate-load-scripts -f netstandard2.0 -t fsx"
+    "postinstall": "paket restore && paket generate-load-scripts -f netstandard2.0 -t fsx",
+    "deploy": "gh-pages -d output"
   },
   "devDependencies": {
     "@babel/core": "7.2.2",
