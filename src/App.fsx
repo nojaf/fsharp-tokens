@@ -66,33 +66,8 @@ type Model =
       ActiveLine: int option
       ActiveTokenIndex: int option }
 
-let initSource =
-    """let update msg model =
-    match msg with
-    | SourceUpdated source -> 
-         { model with Source = source }, Cmd.none
-    | GetTokens ->
-         model, Cmd.OfPromise.perform getTokens model.Source TokenReceived
-    | TokenReceived(tokensText) ->
-         let decodingResult = Decode.fromString tokensDecoder tokensText 
-         match decodingResult with
-         | Ok tokens ->
-             { model with Tokens = tokens}, Cmd.OfFunc.result (LineSelected 1)
-         | Error error ->
-             printfn "%A" error
-             model, Cmd.none
-     | LineSelected lineNumber ->
-         { model with ActiveLine = Some lineNumber }, Cmd.none
- 
-     | TokenSelected tokenIndex ->
-         { model with ActiveTokenIndex = Some tokenIndex}, Cmd.OfFunc.result (PlayScroll tokenIndex)
-     | PlayScroll index ->
-         scrollTo index // cheating
-         model, Cmd.none
-    """
-
 let init _ = 
-    { Source = initSource;
+    { Source = String.Empty;
       Tokens = [||]
       ActiveLine = None
       ActiveTokenIndex = None }, Cmd.none
