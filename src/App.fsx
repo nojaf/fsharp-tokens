@@ -14,6 +14,27 @@ open Elmish.HMR
 open Thoth.Json
 open System
 
+module Monaco =
+    module Editor =
+        /// A range in the editor. This interface is suitable for serialization.
+        type [<AllowNullLiteral>] IRange =
+            /// Line number on which the range starts (starts at 1).
+            abstract startLineNumber: float with get,set
+            /// Column on which the range starts in line `startLineNumber` (starts at 1).
+            abstract startColumn: float with get,set
+            /// Line number on which the range ends.
+            abstract endLineNumber: float with get,set
+            /// Column on which the range ends in line `endLineNumber`.
+            abstract endColumn: float with get,set
+
+        type [<RequireQualifiedAccess>] ScrollType =
+            | Smooth = 0
+            | Immediate = 1
+
+        type [<AllowNullLiteral>] IStandaloneCodeEditor =
+            abstract setSelection: selection: IRange -> unit
+            abstract revealRangeInCenter: range: IRange * ?scrollType: ScrollType -> unit
+
 module Editor =
 
     type Props =
@@ -21,12 +42,15 @@ module Editor =
         | Value of string
         | Language of string
         | IsReadOnly of bool
+        | GetEditor of (Monaco.Editor.IStandaloneCodeEditor -> unit)
 
     let inline editor (props: Props list) : ReactElement =
         ofImport "default" "./Editor.js" (keyValueList CaseRules.LowerFirst props) []
 
 
 importSideEffects "./style.sass"
+
+let mutable monacoInstance : Monaco.Editor.IStandaloneCodeEditor option = None
 
 type Msg =
     | SourceUpdated of string
@@ -79,6 +103,20 @@ let tokensDecoder =
 
 let scrollTo (index: int) : unit = import "scrollTo" "./scrollTo.js"
 
+let highLightCode lineNumber tokenStart tokenEnd =
+    monacoInstance
+    |> Option.iter (fun e ->
+        let range : Monaco.Editor.IRange = jsOptions (fun r ->
+            r.startLineNumber <- (float) lineNumber
+            r.endLineNumber <- (float) lineNumber
+            r.startColumn <- (tokenStart + 1) |> (float)
+            r.endColumn <- (tokenEnd + 2) |> (float)
+        )
+                       
+        e.setSelection(range)
+        e.revealRangeInCenter(range, Monaco.Editor.ScrollType.Smooth)
+    )
+
 let update msg model =
    match msg with
    | SourceUpdated source -> 
@@ -97,6 +135,16 @@ let update msg model =
         { model with ActiveLine = Some lineNumber }, Cmd.none
 
     | TokenSelected tokenIndex ->
+        model.ActiveLine
+        |> Option.iter (fun activeLine -> 
+            let token =
+                model.Tokens
+                |> Array.filter (snd >> (=) activeLine)
+                |> Array.item tokenIndex
+                |> fst
+            highLightCode activeLine token.LeftColumn token.RightColumn
+        )
+
         { model with ActiveTokenIndex = Some tokenIndex}, Cmd.OfFunc.result (PlayScroll tokenIndex)
     | PlayScroll index ->
         scrollTo index // cheating
@@ -124,7 +172,7 @@ let navbar =
 let editor model dispatch =
     div [Id "editor"] [
         div [Id "monaco"] [
-            Editor.editor [Editor.Props.OnChange (SourceUpdated >> dispatch); Editor.Props.Value model.Source]
+            Editor.editor [Editor.Props.OnChange (SourceUpdated >> dispatch); Editor.Props.Value model.Source; Editor.Props.GetEditor (fun e -> monacoInstance <-Some e)]
         ]
         div [ Id "settings" ]
             [ button [ Class "button is-dark is-fullwidth"; OnClick (fun _ -> dispatch Msg.GetTokens) ]
@@ -191,13 +239,13 @@ let contentOfToken model token =
     | None -> 
         String.Empty
 
-let tokenDetail model index (token, _) =
+let tokenDetail model dispatch index (token, _) =
     let className = 
         tokenNameClass token
         |> sprintf "tag is-large %s"
 
     div [ClassName "detail"; Key (index.ToString())] [
-        h3 [ClassName className] [
+        h3 [ClassName className; OnClick (fun _ -> Msg.TokenSelected index |> dispatch)] [
             str token.TokenName
             small [ClassName "is-size-6"] [sprintf "(%d)" index |> str]
         ]
@@ -215,13 +263,13 @@ let tokenDetail model index (token, _) =
         ]
     ]
 
-let details model =
+let details model dispatch =
     model.ActiveLine
     |> Option.map (fun activeLine ->
         let details =
             model.Tokens
             |> Array.filter (snd >> ((=) activeLine))
-            |> Array.mapi (tokenDetail model)
+            |> Array.mapi (tokenDetail model dispatch)
 
         div [Id "details"] [
             h2 [ Class "title is-4" ] [ str "Details of line "; span [ Class "has-text-grey" ] [ofInt activeLine] ]
@@ -240,7 +288,7 @@ let view model dispatch =
             div [ClassName "column is-two-thirds"] [
                 div [Id "results"] [
                     tokens model dispatch
-                    details model
+                    details model dispatch
                 ]
             ]
         ]

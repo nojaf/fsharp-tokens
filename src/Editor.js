@@ -12,6 +12,8 @@ class Editor extends React.Component {
 
   editorDidMount = (editor, monaco) => {
     this.props.editorDidMount();
+    if (this.props.getEditor !== null)
+        this.props.getEditor(editor);
     this.editor = editor;
   };
 
