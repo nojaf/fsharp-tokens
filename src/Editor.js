@@ -35,7 +35,7 @@ class Editor extends React.Component {
       }
     };
     return (
-      <div style={{ height: "50vh", overflow: "hidden" }}>
+      <div style={{ height: "100%", overflow: "hidden" }}>
         <ReactResizeDetector
           handleWidth
           handleHeight

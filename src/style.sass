@@ -1,8 +1,7 @@
-$line-number-width: 20px
+$line-number-width: 25px
 $primary: #3fc380
 
 @import "node_modules/bulma/bulma.sass"
-
 
 html, body, #elmish-app, .column.is-two-thirds, #results
   height: 100%
@@ -39,15 +38,21 @@ main
 
 #tokens
   flex-grow: 1
+  width: 100%
+  overflow: auto
+
+  .lines
+    display: inline-flex
+    flex-direction: column
+
 
 #tokens .title, #details .title
   margin: 1rem
 
 .line
   padding: 10px
-  display: flex
+  display: inline-flex
   align-items: center
-  justify-content: center
   cursor: pointer
 
   &:nth-child(even)
@@ -66,14 +71,12 @@ main
 
 
   .line-number
-    width: $line-number-width
+    min-width: $line-number-width
     display: inline-block
     border-right: 1px solid $dark
+    
 
   .tokens
-    overflow-x: auto
-    overflow-y: hidden
-    width: calc(66vw - #{$column-gap} - #{$column-gap} - #{$line-number-width})
     white-space: nowrap
     margin-left: 5px
     margin-top: 5px
@@ -104,13 +107,13 @@ main
 +tokenColor(line_comment, rgba(135, 211, 124, 1))
 
 #details
-  flex: 0
+  width: 66vw
 
   .detail-container
     overflow-x: auto
     overflow-y: hidden
-    width: calc(66vw - #{$column-gap} - #{$column-gap} - #{$line-number-width})
     white-space: nowrap
+    max-width: 100%
 
   .title
     margin-bottom: 30px

@@ -66,8 +66,33 @@ type Model =
       ActiveLine: int option
       ActiveTokenIndex: int option }
 
+let initSource =
+    """let update msg model =
+    match msg with
+    | SourceUpdated source -> 
+         { model with Source = source }, Cmd.none
+    | GetTokens ->
+         model, Cmd.OfPromise.perform getTokens model.Source TokenReceived
+    | TokenReceived(tokensText) ->
+         let decodingResult = Decode.fromString tokensDecoder tokensText 
+         match decodingResult with
+         | Ok tokens ->
+             { model with Tokens = tokens}, Cmd.OfFunc.result (LineSelected 1)
+         | Error error ->
+             printfn "%A" error
+             model, Cmd.none
+     | LineSelected lineNumber ->
+         { model with ActiveLine = Some lineNumber }, Cmd.none
+ 
+     | TokenSelected tokenIndex ->
+         { model with ActiveTokenIndex = Some tokenIndex}, Cmd.OfFunc.result (PlayScroll tokenIndex)
+     | PlayScroll index ->
+         scrollTo index // cheating
+         model, Cmd.none
+    """
+
 let init _ = 
-    { Source = "let a = 7";
+    { Source = initSource;
       Tokens = [||]
       ActiveLine = None
       ActiveTokenIndex = None }, Cmd.none
@@ -89,17 +114,7 @@ let update msg model =
         let decodingResult = Decode.fromString tokensDecoder tokensText 
         match decodingResult with
         | Ok tokens ->
-            let cmd = 
-                tokens
-                |> Array.map snd
-                |> Array.distinct
-                |> fun dt -> 
-                    if (Array.length dt) = 1 then
-                        Cmd.OfFunc.result (LineSelected 1)
-                    else
-                        Cmd.none
-
-            { model with Tokens = tokens}, cmd
+            { model with Tokens = tokens}, Cmd.OfFunc.result (LineSelected 1)
         | Error error ->
             printfn "%A" error
             model, Cmd.none
@@ -166,6 +181,7 @@ let line dispatch activeLine (lineNumber, tokens) =
         | _ -> "line"
 
     div [ClassName className; Key (sprintf "line-%d" lineNumber); OnClick (fun _ -> LineSelected lineNumber |> dispatch)] [
+        div [ClassName "line-number"] [ofInt lineNumber]
         div [ClassName "tokens" ] [ofArray tokens]
     ]
 
@@ -177,7 +193,7 @@ let tokens model dispatch =
 
     div [Id "tokens"] [
         h2 [ Class "title is-4" ] [ str "Tokens" ]
-        ofArray lines
+        div [Class "lines"] [ofArray lines]
     ]
 
 let private tokenDetailRow label content =
@@ -246,7 +262,7 @@ let view model dispatch =
             div [ClassName "column is-one-third"] [
                 editor model dispatch
             ]
-            div [ClassName "column is-two-third"] [
+            div [ClassName "column is-two-thirds"] [
                 div [Id "results"] [
                     tokens model dispatch
                     details model
