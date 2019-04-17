@@ -206,11 +206,11 @@ let tokenDetail model index (token, _) =
                 tokenDetailRow "TokenName" (str token.TokenName)
                 tokenDetailRow "LeftColumn" (ofInt token.LeftColumn)
                 tokenDetailRow "RightColumn" (ofInt token.RightColumn)
-                tokenDetailRow "Content" (code [] [contentOfToken model token |> str])
+                tokenDetailRow "Content" (pre [] [code [] [contentOfToken model token |> str]])
                 tokenDetailRow "ColorClass" (str token.ColorClass)
                 tokenDetailRow "CharClass" (str token.CharClass)
                 tokenDetailRow "Tag" (ofInt token.Tag)
-                tokenDetailRow "FullMatchedLength" (ofInt token.FullMatchedLength)
+                tokenDetailRow "FullMatchedLength" (span [ClassName "has-text-weight-semibold"] [ofInt token.FullMatchedLength])
             ]
         ]
     ]

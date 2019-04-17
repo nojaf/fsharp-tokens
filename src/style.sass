@@ -99,12 +99,18 @@ main
 
 
 +tokenColor(let, #6bb9f0, true)
++tokenColor(match, #6bb9f0, true)
++tokenColor(with, #6bb9f0, true)
+
 +tokenColor(whitespace, rgb(236, 240, 241))
 +tokenColor(ident, rgb(200, 247, 197))
 +tokenColor(equals, #f15a22, true)
 +tokenColor(int32, rgba(241, 231, 254, 1))
 +tokenColor(char, rgba(241, 231, 254, 1))
 +tokenColor(line_comment, rgba(135, 211, 124, 1))
+
++tokenColor(string, rgba(254, 241, 96, 1))
++tokenColor(string_text, rgba(254, 241, 95, 1))
 
 #details
   width: 66vw
@@ -129,3 +135,9 @@ main
 
     &.lit
       background-color: $primary
+
+pre
+  padding: 0 5px
+  display: inline
+  code
+    color: $red
