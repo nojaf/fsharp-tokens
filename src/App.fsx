@@ -36,7 +36,7 @@ type Msg =
     | TokenSelected of int
     | PlayScroll of int
 
-type Token =
+type TokenInfo =
     { ColorClass: string
       CharClass: string
       FSharpTokenTriggerClass: string
@@ -46,7 +46,7 @@ type Token =
       Tag: int
       FullMatchedLength: int }
 
-    static member Decoder : Decoder<Token> =
+    static member Decoder : Decoder<TokenInfo> =
           Decode.object
                 (fun get ->
                   { ColorClass = get.Required.Field "ColorClass" Decode.string
@@ -59,10 +59,22 @@ type Token =
                     FullMatchedLength = get.Required.Field "FullMatchedLength" Decode.int }
                 )
 
+type Token =
+    { TokenInfo: TokenInfo
+      LineNumber: int
+      Content: string }
+
+    static member Decoder : Decoder<Token> =
+          Decode.object
+                  (fun get ->
+                    { TokenInfo = get.Required.Field "TokenInfo" TokenInfo.Decoder
+                      LineNumber = get.Required.Field "LineNumber" Decode.int
+                      Content = get.Required.Field "Content" Decode.string }
+                  )
 
 type Model = 
     { Source: string
-      Tokens: (Token * int) array
+      Tokens: Token array 
       ActiveLine: int option
       ActiveTokenIndex: int option }
 
@@ -74,9 +86,6 @@ let init _ =
 
 let getTokens (source: string) : JS.Promise<string> = import "getTokens" "./api"
 
-let tokensDecoder =
-    Decode.array (Decode.tuple2 Token.Decoder Decode.int)
-
 let scrollTo (index: int) : unit = import "scrollTo" "./scrollTo.js"
 
 let update msg model =
@@ -86,18 +95,14 @@ let update msg model =
    | GetTokens ->
         model, Cmd.OfPromise.perform getTokens model.Source TokenReceived
    | TokenReceived(tokensText) ->
-        let decodingResult = Decode.fromString tokensDecoder tokensText 
+        let decodingResult = Decode.fromString (Decode.array Token.Decoder) tokensText 
         match decodingResult with
         | Ok tokens ->
             let cmd = 
-                tokens
-                |> Array.map snd
-                |> Array.distinct
-                |> fun dt -> 
-                    if (Array.length dt) = 1 then
-                        Cmd.OfFunc.result (LineSelected 1)
-                    else
-                        Cmd.none
+                if (Array.length tokens) = 1 then
+                    Cmd.OfFunc.result (LineSelected 1)
+                else
+                    Cmd.none
 
             { model with Tokens = tokens}, cmd
         | Error error ->
@@ -146,19 +151,19 @@ let editor model dispatch =
     ]
 
 let tokenNameClass token =
-    sprintf "is-%s" (token.TokenName.ToLower())
+    sprintf "is-%s" (token.TokenInfo.TokenName.ToLower())
 
 let lineToken dispatch index (token:Token) =
     div [ClassName "token"; Key (index.ToString()); OnClick (fun _ -> dispatch (TokenSelected index))] [
         span [ClassName (sprintf "tag %s"(tokenNameClass token))] [
-            str token.TokenName
+            str token.TokenInfo.TokenName
         ]
     ]
 
 let line dispatch activeLine (lineNumber, tokens) =
     let tokens = 
         tokens
-        |> Array.mapi (fun idx (token,_) -> lineToken dispatch idx token)
+        |> Array.mapi (fun idx token -> lineToken dispatch idx token)
 
     let className =
         match activeLine with
@@ -172,7 +177,7 @@ let line dispatch activeLine (lineNumber, tokens) =
 let tokens model dispatch =
     let lines = 
         model.Tokens
-        |> Array.groupBy snd
+        |> Array.groupBy (fun t -> t.LineNumber)
         |> Array.map (line dispatch model.ActiveLine)
 
     div [Id "tokens"] [
@@ -190,36 +195,30 @@ let private tokenDetailRow label content =
         ]
     ]
 
-let private splitOnNewLines (value: string) = value.Split([|System.Environment.NewLine;"\n";"\r";|], StringSplitOptions.RemoveEmptyEntries)
-
-let contentOfToken model token =
-    let lines = splitOnNewLines model.Source
-    match model.ActiveLine with
-    | Some line ->
-        lines.[line - 1].Substring(token.LeftColumn, token.RightColumn - token.LeftColumn + 1)
-    | None -> 
-        String.Empty
-
-let tokenDetail model index (token, _) =
+let tokenDetail model index token =
     let className = 
         tokenNameClass token
         |> sprintf "tag is-large %s"
 
+    let { TokenName = tokenName; LeftColumn = leftColumn; RightColumn = rightColumn; 
+          ColorClass = colorClass; CharClass = charClass; Tag = tag
+          FullMatchedLength = fullMatchedLength } = token.TokenInfo
+
     div [ClassName "detail"; Key (index.ToString())] [
         h3 [ClassName className] [
-            str token.TokenName
+            str token.TokenInfo.TokenName
             small [ClassName "is-size-6"] [sprintf "(%d)" index |> str]
         ]
         table [ClassName "table is-striped"] [
             tbody [] [
-                tokenDetailRow "TokenName" (str token.TokenName)
-                tokenDetailRow "LeftColumn" (ofInt token.LeftColumn)
-                tokenDetailRow "RightColumn" (ofInt token.RightColumn)
-                tokenDetailRow "Content" (code [] [contentOfToken model token |> str])
-                tokenDetailRow "ColorClass" (str token.ColorClass)
-                tokenDetailRow "CharClass" (str token.CharClass)
-                tokenDetailRow "Tag" (ofInt token.Tag)
-                tokenDetailRow "FullMatchedLength" (ofInt token.FullMatchedLength)
+                tokenDetailRow "TokenName" (str tokenName)
+                tokenDetailRow "LeftColumn" (ofInt leftColumn)
+                tokenDetailRow "RightColumn" (ofInt rightColumn)
+                tokenDetailRow "Content" (code [] [token.Content |> str])
+                tokenDetailRow "ColorClass" (str colorClass)
+                tokenDetailRow "CharClass" (str charClass)
+                tokenDetailRow "Tag" (ofInt tag)
+                tokenDetailRow "FullMatchedLength" (ofInt fullMatchedLength)
             ]
         ]
     ]
@@ -229,7 +228,7 @@ let details model =
     |> Option.map (fun activeLine ->
         let details =
             model.Tokens
-            |> Array.filter (snd >> ((=) activeLine))
+            |> Array.filter (fun t -> t.LineNumber = activeLine)
             |> Array.mapi (tokenDetail model)
 
         div [Id "details"] [
