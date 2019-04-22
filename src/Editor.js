@@ -12,6 +12,8 @@ class Editor extends React.Component {
 
   editorDidMount = (editor, monaco) => {
     this.props.editorDidMount();
+    if (this.props.getEditor !== null)
+        this.props.getEditor(editor);
     this.editor = editor;
   };
 
@@ -35,7 +37,7 @@ class Editor extends React.Component {
       }
     };
     return (
-      <div style={{ height: "50vh", overflow: "hidden" }}>
+      <div style={{ height: "100%", overflow: "hidden" }}>
         <ReactResizeDetector
           handleWidth
           handleHeight
