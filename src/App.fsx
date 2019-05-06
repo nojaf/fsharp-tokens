@@ -12,7 +12,6 @@ open Elmish
 open Elmish.React
 open Elmish.HMR
 open Thoth.Json
-open System
 
 module Monaco =
     module Editor =
