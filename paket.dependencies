@@ -8,3 +8,8 @@ nuget Fable.Elmish.React
 nuget Fable.React 
 nuget Fulma
 nuget Thoth.Json
+
+group dev
+    source https://www.nuget.org/api/v2
+    framework: netstandard2.0
+    nuget NETStandard.Library

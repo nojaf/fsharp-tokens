@@ -1,7 +1,7 @@
 #load "../.paket/load/netstandard2.0/main.group.fsx"
 
 #if INTERACTIVE
-#r "netstandard"
+#r @"..\packages\dev\NETStandard.Library\build\netstandard2.0\ref\netstandard.dll"
 #endif
 
 open Fable.Core
