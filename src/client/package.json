@@ -10,7 +10,7 @@
   "scripts": {
     "build": "webpack -p",
     "start": "webpack-dev-server",
-    "postinstall": "paket restore && paket generate-load-scripts -f netstandard2.0 -t fsx",
+    "predeploy": "yarn build",
     "deploy": "gh-pages -d output"
   },
   "devDependencies": {

@@ -1,0 +1,8 @@
+group server
+Microsoft.NET.Sdk.Functions
+FSharp.Compiler.Service
+FSharp.Core
+Thoth.Json.Net
+File:Utils.fs
+File:TriviaTypes.fs
+File:TokenParser.fs

@@ -1,8 +1,7 @@
-#load "../.paket/load/netstandard2.0/main.group.fsx"
+open System
 
-#if INTERACTIVE
-#r @"..\packages\dev\NETStandard.Library\build\netstandard2.0\ref\netstandard.dll"
-#endif
+#load "../../.paket/load/netstandard2.0/client/client.group.fsx"
+#load "../Shared.fs"
 
 open Fable.Core
 open Fable.Core.JsInterop
@@ -12,6 +11,8 @@ open Elmish
 open Elmish.React
 open Elmish.HMR
 open Thoth.Json
+open Fetch
+open Nojaf.FSharpTokens
 
 module Monaco =
     module Editor =
@@ -58,6 +59,7 @@ type Msg =
     | LineSelected of int
     | TokenSelected of int
     | PlayScroll of int
+    | DefinesUpdated of string
 
 type TokenInfo =
     { ColorClass: string
@@ -97,17 +99,35 @@ type Token =
 
 type Model = 
     { Source: string
+      Defines: string
       Tokens: Token array 
       ActiveLine: int option
       ActiveTokenIndex: int option }
 
 let init _ = 
     { Source = "let answer = 42";
+      Defines = ""
       Tokens = [||]
       ActiveLine = None
       ActiveTokenIndex = None }, Cmd.none
 
-let getTokens (source: string) : JS.Promise<string> = import "getTokens" "./api"
+let getTokens ({ Defines = defines; Source = source }) : JS.Promise<string> = //import "getTokens" "./api"
+    let url =
+        #if DEBUG
+        "http://localhost:7071/api/GetTokens"
+        #else
+        "https://fsharp-tokens.azurewebsites.net/api/GetTokens"
+        #endif
+        
+    let defines =
+        defines.Split([|' ';',';';'|], StringSplitOptions.RemoveEmptyEntries)
+        |> Array.toList
+
+    let model: Shared.GetTokensRequest = { Defines = defines; SourceCode = source }
+    let json = Encode.toString 4 (Shared.GetTokensRequest.Encode model)
+        
+    fetch url [RequestProperties.Body (!^ json); RequestProperties.Method HttpMethod.POST]
+    |> Promise.bind (fun res -> res.text())
 
 let scrollTo (index: int) : unit = import "scrollTo" "./scrollTo.js"
 
@@ -130,7 +150,7 @@ let update msg model =
    | SourceUpdated source -> 
         { model with Source = source }, Cmd.none
    | GetTokens ->
-        model, Cmd.OfPromise.perform getTokens model.Source TokenReceived
+        model, Cmd.OfPromise.perform getTokens model TokenReceived
    | TokenReceived(tokensText) ->
         let decodingResult = Decode.fromString (Decode.array Token.Decoder) tokensText 
         match decodingResult with
@@ -163,8 +183,8 @@ let update msg model =
     | PlayScroll index ->
         scrollTo index // cheating
         model, Cmd.none
-
-
+    | DefinesUpdated defines ->
+        { model with Defines = defines }, Cmd.none
 
 let navbar =
     nav [ Class "navbar" ]
@@ -187,6 +207,9 @@ let editor model dispatch =
     div [Id "editor"] [
         div [Id "monaco"] [
             Editor.editor [Editor.Props.OnChange (SourceUpdated >> dispatch); Editor.Props.Value model.Source; Editor.Props.GetEditor (fun e -> monacoInstance <-Some e)]
+        ]
+        div [Id "defines"; ClassName "input"] [
+            input [ClassName "input"; Placeholder "Enter your defines separated with a space"; Value model.Defines; OnChange (fun ev -> ev.Value |> DefinesUpdated |> dispatch)]
         ]
         div [ Id "settings" ]
             [ button [ Class "button is-dark is-fullwidth"; OnClick (fun _ -> dispatch Msg.GetTokens) ]

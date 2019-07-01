@@ -12,7 +12,7 @@ function resolve(filePath) {
 
 const CONFIG = {
   fsharpEntry: {
-    app: [resolve("./src/App.fsx")]
+    app: [resolve("./App.fsx")]
   },
   devServerProxy: {
     "/api/*": {

@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+#
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{478534BD-D261-462C-8B62-DF3CCB40BC6C}"
+ProjectSection(SolutionItems) = preProject
+	src\Shared.fs = src\Shared.fs
+EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "server", "server", "{FAFD8323-935B-4B16-B7DD-2209EB451F58}"
+EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Nojaf.FSharpTokens", "src\server\Nojaf.FSharpTokens\Nojaf.FSharpTokens.fsproj", "{C2D96D18-98D5-4575-81F1-D9A15A3B8282}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C2D96D18-98D5-4575-81F1-D9A15A3B8282}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C2D96D18-98D5-4575-81F1-D9A15A3B8282}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C2D96D18-98D5-4575-81F1-D9A15A3B8282}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C2D96D18-98D5-4575-81F1-D9A15A3B8282}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{FAFD8323-935B-4B16-B7DD-2209EB451F58} = {478534BD-D261-462C-8B62-DF3CCB40BC6C}
+		{C2D96D18-98D5-4575-81F1-D9A15A3B8282} = {FAFD8323-935B-4B16-B7DD-2209EB451F58}
+	EndGlobalSection
+EndGlobal
