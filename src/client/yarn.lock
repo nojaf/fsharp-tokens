@@ -2417,15 +2417,15 @@ fable-babel-plugins@^2.2.0:
   resolved "https://registry.npmjs.org/fable-babel-plugins/-/fable-babel-plugins-2.2.0.tgz#2c61be1bd1afb1f03da4e66ccaa1bfecf92063a3"
   integrity sha512-4g8CIyXCILk5LLiwNPtvtrPy3YuV5eJV18SYJCZxu3A1BSKNvPGHLSg5YcFJ2zt4qmBvSkBewlQ2bVQYG+TnrQ==
 
-fable-compiler@2.2.3:
-  version "2.2.3"
-  resolved "https://registry.npmjs.org/fable-compiler/-/fable-compiler-2.2.3.tgz#1b30ad8f2e0f2d2a970f86831b4ea626b494b608"
-  integrity sha512-cu5GJW/38PmXjmC1+f8oLEbcp63pf6dyMwrQFUWwqz1lCNuiHcfgUAS5A5M46EqHNlYBHc0v3fZcMFUFzNUeLg==
+fable-compiler@2.3.16:
+  version "2.3.16"
+  resolved "https://registry.yarnpkg.com/fable-compiler/-/fable-compiler-2.3.16.tgz#3b8ac523919bc3937270b33bfdefc0c396cf62f6"
+  integrity sha512-sgzLB0tNARrGedpc2HhdK24dxBepbluPkBUcfFQgr7KEq5A4dK9okJEb/v0ee/oQ8f3lijHGgNpyvMmCwpRLWA==
 
-fable-loader@2.1.5:
-  version "2.1.5"
-  resolved "https://registry.npmjs.org/fable-loader/-/fable-loader-2.1.5.tgz#c757fb76373a38b562e31844cb6355fd0c95966c"
-  integrity sha512-HSgzYk55KOhvhUGseETtlDndAIW4ZbmOqSSQkekqTtKrl1vt5Kwo9TC0iWsKruBzhwTTKjNFNFDqR3ASGY1Skw==
+fable-loader@2.1.8:
+  version "2.1.8"
+  resolved "https://registry.yarnpkg.com/fable-loader/-/fable-loader-2.1.8.tgz#589ae79fa0d047e2d48f4cc82c64830d006840b3"
+  integrity sha512-3cw1BPnAT6AJI/VSMjGuWeAllLiqBSFQBW2AUXQhFwXfJ7XupekgfIb9lW3xv2GPlUQZCLrCDFfqbpFpppJVhA==
   dependencies:
     fable-babel-plugins "^2.2.0"
 

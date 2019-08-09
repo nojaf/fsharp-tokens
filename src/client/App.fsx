@@ -1,5 +1,3 @@
-open System
-
 #load "../../.paket/load/netstandard2.0/client/client.group.fsx"
 #load "../Shared.fs"
 
@@ -13,6 +11,7 @@ open Elmish.HMR
 open Thoth.Json
 open Fetch
 open Nojaf.FSharpTokens
+open System
 
 module Monaco =
     module Editor =
@@ -102,14 +101,16 @@ type Model =
       Defines: string
       Tokens: Token array 
       ActiveLine: int option
-      ActiveTokenIndex: int option }
+      ActiveTokenIndex: int option
+      IsLoading: bool }
 
 let init _ = 
     { Source = "let answer = 42";
       Defines = ""
       Tokens = [||]
       ActiveLine = None
-      ActiveTokenIndex = None }, Cmd.none
+      ActiveTokenIndex = None
+      IsLoading = false }, Cmd.none
 
 let getTokens ({ Defines = defines; Source = source }) : JS.Promise<string> = //import "getTokens" "./api"
     let url =
@@ -120,7 +121,7 @@ let getTokens ({ Defines = defines; Source = source }) : JS.Promise<string> = //
         #endif
         
     let defines =
-        defines.Split([|' ';',';';'|], StringSplitOptions.RemoveEmptyEntries)
+        defines.Split(separator = [|' ';',';';'|], options = StringSplitOptions.RemoveEmptyEntries)
         |> Array.toList
 
     let model: Shared.GetTokensRequest = { Defines = defines; SourceCode = source }
@@ -150,7 +151,7 @@ let update msg model =
    | SourceUpdated source -> 
         { model with Source = source }, Cmd.none
    | GetTokens ->
-        model, Cmd.OfPromise.perform getTokens model TokenReceived
+        { model with IsLoading = true }, Cmd.OfPromise.perform getTokens model TokenReceived
    | TokenReceived(tokensText) ->
         let decodingResult = Decode.fromString (Decode.array Token.Decoder) tokensText 
         match decodingResult with
@@ -161,10 +162,10 @@ let update msg model =
                 else
                     Cmd.none
 
-            { model with Tokens = tokens}, cmd
+            { model with Tokens = tokens; IsLoading = false }, cmd
         | Error error ->
             printfn "%A" error
-            model, Cmd.none
+            { model with IsLoading = false }, Cmd.none
     | LineSelected lineNumber ->
         { model with ActiveLine = Some lineNumber }, Cmd.none
 
@@ -204,20 +205,26 @@ let navbar =
                             [ str "Github" ] ] ] ] ] ]
 
 let editor model dispatch =
-    div [Id "editor"] [
-        div [Id "monaco"] [
-            Editor.editor [Editor.Props.OnChange (SourceUpdated >> dispatch); Editor.Props.Value model.Source; Editor.Props.GetEditor (fun e -> monacoInstance <-Some e)]
-        ]
-        div [Id "defines"; ClassName "input"] [
-            input [ClassName "input"; Placeholder "Enter your defines separated with a space"; Value model.Defines; OnChange (fun ev -> ev.Value |> DefinesUpdated |> dispatch)]
-        ]
-        div [ Id "settings" ]
-            [ button [ Class "button is-dark is-fullwidth"; OnClick (fun _ -> dispatch Msg.GetTokens) ]
+    let loaderOrButton =
+        if model.IsLoading then
+            progress [ClassName "progress is-small is-primary"; Max "100"] [str "50%"]
+        else
+            button [ Class "button is-dark is-fullwidth"; OnClick (fun _ -> dispatch Msg.GetTokens) ]
                 [ span [ Class "icon is-small" ]
                     [ i [ Class "fas fa-code" ]
                         [ ] ]
                   span [ ]
-                    [ str "Get Tokens" ] ] ]
+                    [ str "Get Tokens" ] ]
+
+    div [Id "editor"] [
+        div [Id "monaco"] [
+            Editor.editor [Editor.Props.OnChange (SourceUpdated >> dispatch); Editor.Props.Value model.Source; Editor.Props.GetEditor (fun e -> monacoInstance <-Some e)]
+        ]
+
+        div [Id "defines"; ClassName "input"] [
+            input [ClassName "input"; Placeholder "Enter your defines separated with a space"; Value model.Defines; OnChange (fun ev -> ev.Value |> DefinesUpdated |> dispatch)]
+        ]
+        div [ Id "settings" ] [ loaderOrButton ]
     ]
 
 let tokenNameClass token =

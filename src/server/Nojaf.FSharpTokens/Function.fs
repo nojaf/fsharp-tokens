@@ -6,7 +6,6 @@ open Microsoft.Azure.WebJobs
 open Microsoft.Azure.WebJobs.Extensions.Http
 open Microsoft.Extensions.Logging
 open Newtonsoft.Json.Linq
-open System
 open System.IO
 open System.Net
 open System.Net.Http
