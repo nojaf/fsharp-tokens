@@ -96,6 +96,7 @@ Target.create "Format" (fun _ ->
 
     Yarn.exec "format" setYarnWorkingDirectory)
 
+Target.create "Deploy" (fun _ -> Yarn.exec "deploy" setYarnWorkingDirectory)
 
 Target.create "Default" ignore
 
