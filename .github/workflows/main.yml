@@ -4,11 +4,13 @@ on: [push, pull_request]
 
 jobs:
   build:
-    name: 'Build'
-    using: 'docker'
-    image: 'docker://nojaf/fable:2.4'
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macOS-latest]
+        dotnet: [3.0.100]
+    runs-on: ${{ matrix.os }}
     steps:
-      - name: Restore tools
+      - name: Restore local tools
         run: dotnet tool restore
-      - name: run FAKE
+      - name: Build
         run: dotnet fake run build.fsx
