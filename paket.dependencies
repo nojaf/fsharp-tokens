@@ -1,3 +1,4 @@
+version 5.226.0
 storage: none
 source https://www.nuget.org/api/v2
 framework: netstandard2.0
@@ -18,13 +19,25 @@ nuget Thoth.Json
 group server
 storage:none
 source: https://api.nuget.org/v3/index.json 
-framework: netcoreapp2.1
+framework: netcoreapp3.0
 
 nuget FSharp.Data
-nuget Microsoft.NET.Sdk.Functions 1.0.24
-nuget FSharp.Compiler.Service 30.0.0
-nuget FSharp.Core 4.6.2
+nuget Microsoft.NET.Sdk.Functions 3.0.1
+nuget FSharp.Compiler.Service 33.0.0
 nuget Thoth.Json.Net
-github fsprojects/fantomas:trivia /src/Fantomas/TokenParser.fs
-github fsprojects/fantomas:trivia /src/Fantomas/TriviaTypes.fs
-github fsprojects/fantomas:trivia /src/Fantomas/Utils.fs
+github fsprojects/fantomas /src/Fantomas/FormatConfig.fs
+github fsprojects/fantomas /src/Fantomas/Dbg.fs
+github fsprojects/fantomas /src/Fantomas/TokenParserBoolExpr.fs
+github fsprojects/fantomas /src/Fantomas/TokenParser.fs
+github fsprojects/fantomas /src/Fantomas/TriviaTypes.fs
+github fsprojects/fantomas /src/Fantomas/Utils.fs
+
+group build
+storage:none
+source: https://api.nuget.org/v3/index.json
+framework: netstandard2.0
+nuget Fake.Core.Target
+nuget Fake.IO.FileSystem
+nuget Fake.JavaScript.Yarn
+nuget Fake.DotNet.Paket
+nuget Fantomas
