@@ -1,0 +1,13 @@
+name: Build master
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Main
+        uses: docker://nojaf/fable:2.4
+        run: |
+          dotnet tool restore
+          dotnet fake run build.fsx
