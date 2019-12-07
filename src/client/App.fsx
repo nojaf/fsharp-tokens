@@ -59,6 +59,8 @@ type Msg =
     | TokenSelected of int
     | PlayScroll of int
     | DefinesUpdated of string
+    | VersionFound of string
+    | NetworkException of exn
 
 type TokenInfo =
     { ColorClass: string
@@ -102,23 +104,38 @@ type Model =
       Tokens: Token array 
       ActiveLine: int option
       ActiveTokenIndex: int option
-      IsLoading: bool }
+      IsLoading: bool
+      Version: string }
 
-let init _ = 
+let private backendRoot =
+        #if DEBUG
+        "http://localhost:7071/api"
+        #else
+        "https://fsharp-tokens.azurewebsites.net/api"
+        #endif
+
+let private getVersion () =
+    let url = sprintf "%s/%s" backendRoot "version"
+    Fetch.fetch url []
+    |> Promise.bind (fun res -> res.text())
+    |> Promise.map (fun (json:string) ->
+        match Decode.fromString Decode.string json with
+        | Ok v  -> v
+        | Error e -> failwithf "%A" e)
+
+let init _ =
+    let cmd = Cmd.OfPromise.either getVersion () VersionFound NetworkException
+
     { Source = "let answer = 42";
       Defines = ""
       Tokens = [||]
       ActiveLine = None
       ActiveTokenIndex = None
-      IsLoading = false }, Cmd.none
+      IsLoading = false
+      Version = "??" }, cmd
 
 let getTokens ({ Defines = defines; Source = source }) : JS.Promise<string> = //import "getTokens" "./api"
-    let url =
-        #if DEBUG
-        "http://localhost:7071/api/GetTokens"
-        #else
-        "https://fsharp-tokens.azurewebsites.net/api/GetTokens"
-        #endif
+    let url = sprintf "%s/%s" backendRoot "get-tokens"
         
     let defines =
         defines.Split(separator = [|' ';',';';'|], options = StringSplitOptions.RemoveEmptyEntries)
@@ -186,14 +203,19 @@ let update msg model =
         model, Cmd.none
     | DefinesUpdated defines ->
         { model with Defines = defines }, Cmd.none
+    | VersionFound v -> { model with Version = v }, Cmd.none
+    | NetworkException e ->
+        JS.console.error e
+        model, Cmd.none
 
-let navbar =
+let navbar version =
+    let brand = sprintf "F# tokens - FCS version %s" version
     nav [ Class "navbar" ]
         [ div [ Class "navbar-brand" ]
             [ a [ Href "/"
                   Class "navbar-item" ]
                 [ strong [ ]
-                    [ str "Marksmanship" ] ] ]
+                    [ str brand ] ] ]
           div [ Class "navbar-end" ]
             [ div [ Class "navbar-item" ]
                 [ a [ Href "https://github.com/nojaf/fsharp-tokens" ]
@@ -318,7 +340,7 @@ let details model dispatch =
 
 let view model dispatch =
     fragment [] [
-        navbar
+        navbar model.Version
         main [ClassName "columns is-gapless"] [
             div [ClassName "column is-one-third"] [
                 editor model dispatch

@@ -70,14 +70,14 @@ Target.create "Watch" (fun _ ->
 
             dirtyWatcher := watcher
 
-            CreateProcess.fromRawCommand funcPath [ "start" ]
+            CreateProcess.fromRawCommand funcPath [ "host";"start";"--csharp" ]
             |> CreateProcess.withWorkingDirectory serverPath
             |> Proc.run
             |> ignore
 
     let runAzureFunction = async { startFunc() }
 
-    Async.Parallel [ runAzureFunction; compileFable ]
+    Async.Parallel [ runAzureFunction ; compileFable ]
     |> Async.Ignore
     |> Async.RunSynchronously)
 

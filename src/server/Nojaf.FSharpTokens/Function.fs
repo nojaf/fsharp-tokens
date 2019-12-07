@@ -37,7 +37,7 @@ module GetTokens =
         |> Encode.list
         |> Encode.toString 4
 
-    let private getTokens (req: HttpRequest) =
+    let getTokens (req: HttpRequest) =
         let content = using (new StreamReader(req.Body)) (fun stream -> stream.ReadToEnd())
         let model = Decode.fromString GetTokensRequest.Decode content
         match model with
@@ -51,7 +51,7 @@ module GetTokens =
             printfn "Failed to decode: %A" err
             new HttpResponseMessage(HttpStatusCode.BadRequest, Content = new StringContent(err, System.Text.Encoding.UTF8, "text/plain"))
 
-    let private getVersion () =
+    let getVersion () =
         let version =
             let assembly = typeof<FSharp.Compiler.SourceCodeServices.FSharpChecker>.Assembly
             let version = assembly.GetName().Version
@@ -61,21 +61,22 @@ module GetTokens =
             |> Encode.toString 4
         new HttpResponseMessage(HttpStatusCode.OK, Content = new StringContent(json, System.Text.Encoding.UTF8, "application/json"))
 
-    let private notFound () =
+    let notFound () =
         let json =
             Encode.string "Not found"
             |> Encode.toString 4
         new HttpResponseMessage(HttpStatusCode.NotFound, Content = new StringContent(json, System.Text.Encoding.UTF8, "application/json"))
 
-    [<FunctionName("GetTokens")>]
-    let Run([<HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", Route = "{*any}")>] req: HttpRequest, log: ILogger) =
-        log.LogInformation("F# HTTP trigger function processed a request.")
-        let path = req.Path.Value.ToLower()
-        let method = req.Method.ToUpper()
+[<FunctionName("Tokens")>]
+let Run([<HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", Route = "{*any}")>] req: HttpRequest (*, log: ILogger*)) =
+    //log.LogInformation("F# HTTP trigger function processed a request.")
+    printfn ("F# HTTP trigger function processed a request..")
+    let path = req.Path.Value.ToLower()
+    let method = req.Method.ToUpper()
 
-        match method, path with
-        | "POST", "/api/get-tokens" -> getTokens req
-        | "GET", "/api/version" -> getVersion ()
-        | _ -> notFound ()
+    match method, path with
+    | "POST", "/api/get-tokens" -> GetTokens.getTokens req
+    | "GET", "/api/version" -> GetTokens.getVersion ()
+    | _ -> GetTokens.notFound ()
 
 

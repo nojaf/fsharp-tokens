@@ -2,7 +2,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>netcoreapp3.0</TargetFramework>
-    <AzureFunctionsVersion>v2</AzureFunctionsVersion>
+    <AzureFunctionsVersion>v3</AzureFunctionsVersion>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="..\..\..\paket-files\server\fsprojects\fantomas\src\Fantomas\FormatConfig.fs">
@@ -30,6 +30,8 @@
       <Link>paket-files/TokenParser.fs</Link>
     </Compile>
     <Compile Include="..\..\Shared.fs" />
+  </ItemGroup>
+  <ItemGroup>
     <None Update="host.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
