@@ -4,10 +4,11 @@ on: [push, pull_request]
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    name: 'Build'
+    using: 'docker'
+    image: 'docker://nojaf/fable:2.4'
     steps:
-      - name: Main
-        image: 'docker://nojaf/fable:2.4'
-        run: |
-          dotnet tool restore
-          dotnet fake run build.fsx
+      - name: Restore tools
+        run: dotnet tool restore
+      - name: run FAKE
+        run: dotnet fake run build.fsx
