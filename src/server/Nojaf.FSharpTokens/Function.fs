@@ -37,14 +37,12 @@ module GetTokens =
         |> Encode.list
         |> Encode.toString 4
 
-    [<FunctionName("GetTokens")>]
-    let Run([<HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = null)>] req: HttpRequest, log: ILogger) =
-        log.LogInformation("F# HTTP trigger function processed a request.")
+    let private getTokens (req: HttpRequest) =
         let content = using (new StreamReader(req.Body)) (fun stream -> stream.ReadToEnd())
         let model = Decode.fromString GetTokensRequest.Decode content
         match model with
         | Ok model ->
-            let json = 
+            let json =
                 TokenParser.tokenize model.Defines model.SourceCode
                 |> fst
                 |> toJson
@@ -52,3 +50,32 @@ module GetTokens =
         | Error err ->
             printfn "Failed to decode: %A" err
             new HttpResponseMessage(HttpStatusCode.BadRequest, Content = new StringContent(err, System.Text.Encoding.UTF8, "text/plain"))
+
+    let private getVersion () =
+        let version =
+            let assembly = typeof<FSharp.Compiler.SourceCodeServices.FSharpChecker>.Assembly
+            let version = assembly.GetName().Version
+            sprintf "%i.%i.%i" version.Major version.Minor version.Revision
+        let json =
+            Encode.string version
+            |> Encode.toString 4
+        new HttpResponseMessage(HttpStatusCode.OK, Content = new StringContent(json, System.Text.Encoding.UTF8, "application/json"))
+
+    let private notFound () =
+        let json =
+            Encode.string "Not found"
+            |> Encode.toString 4
+        new HttpResponseMessage(HttpStatusCode.NotFound, Content = new StringContent(json, System.Text.Encoding.UTF8, "application/json"))
+
+    [<FunctionName("GetTokens")>]
+    let Run([<HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", Route = "{*any}")>] req: HttpRequest, log: ILogger) =
+        log.LogInformation("F# HTTP trigger function processed a request.")
+        let path = req.Path.Value.ToLower()
+        let method = req.Method.ToUpper()
+
+        match method, path with
+        | "POST", "/api/get-tokens" -> getTokens req
+        | "GET", "/api/version" -> getVersion ()
+        | _ -> notFound ()
+
+
