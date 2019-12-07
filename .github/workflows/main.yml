@@ -7,7 +7,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Main
-        using: 'docker'
         image: 'docker://nojaf/fable:2.4'
         run: |
           dotnet tool restore
