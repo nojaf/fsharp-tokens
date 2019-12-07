@@ -3,6 +3,9 @@ Microsoft.NET.Sdk.Functions
 FSharp.Compiler.Service
 FSharp.Core
 Thoth.Json.Net
+File:Dbg.fs
+File:FormatConfig.fs
+File:TokenParserBoolExpr.fs
 File:Utils.fs
 File:TriviaTypes.fs
 File:TokenParser.fs

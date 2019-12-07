@@ -2,27 +2,14 @@
 
 ## Prerequisites
 
-Paket should be installed as global cli tool:
+.NET Core 3.x, restore tools first
 
-> dotnet tool install -g Paket
-
-## Installation
-
-> yarn
-
-Installs both .NET and NodeJs dependencies.
-Generates `.paket/load/netstandard2.0/main.group.fsx` afterwards.
+> dotnet tool restore
 
 ## Build
 
-> yarn webpack
+> dotnet fake run build.fsx
 
 ## Run
 
-> yarn webpack-dev-server
-
-## Docker
-
-(in PowerShell)
-
-> docker run -it --rm -v "${PWD}:/app" -w "/app" -p "8080:8080"  nojaf/fable:2.2 sh
+> dotnet fake run build.fsx -t Watch
