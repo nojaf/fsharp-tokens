@@ -35,7 +35,7 @@ Target.create "Clean" (fun _ ->
 Target.create "Yarn" (fun _ -> Yarn.installPureLock setYarnWorkingDirectory)
 
 Target.create "Paket" (fun _ ->
-    Paket.restore id
+    Paket.restore (fun p -> { p with ToolType = ToolType.CreateLocalTool() })
     Shell.rm_rf (".paket" </> "load")
     Paket.``generate load script``())
 
