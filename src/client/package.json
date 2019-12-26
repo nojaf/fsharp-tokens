@@ -21,7 +21,7 @@
     "babel-loader": "^8.0.5",
     "copy-webpack-plugin": "^5.0.2",
     "css-loader": "^3.2.1",
-    "fable-compiler": "2.4.11",
+    "fable-compiler": "2.4.12",
     "fable-loader": "2.1.8",
     "file-loader": "^5.0.2",
     "gh-pages": "^2.0.1",
