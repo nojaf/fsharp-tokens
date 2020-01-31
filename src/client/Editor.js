@@ -50,17 +50,17 @@ const Editor = ({ onChange, language, getEditor, value, isReadOnly }) => {
   }
 
   return (
-      <div style={{ height: "100%", overflow: "hidden" }}>
-<MonacoEditor
-  height={"100%"}
-  language={language}
-  editorDidMount={handleEditorDidMount}
-  value={value}
-  onChange={handleEditorChange}
-  options={options}
-  />
-  </div>
-);
+    <div style={{ height: "100%", overflow: "hidden" }}>
+      <MonacoEditor
+        height={"100%"}
+        language={language}
+        editorDidMount={handleEditorDidMount}
+        value={value}
+        onChange={handleEditorChange}
+        options={options}
+      />
+    </div>
+  );
 };
 
 Editor.propTypes = {

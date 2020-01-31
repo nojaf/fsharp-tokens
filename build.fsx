@@ -84,7 +84,6 @@ Target.create "Watch" (fun _ ->
 Target.create "Format" (fun _ ->
     let fantomasConfig =
         { FormatConfig.Default with
-              ReorderOpenDeclaration = true
               KeepNewlineAfter = true }
 
     let fsharpFiles = !!(serverPath </> "*.fs") ++ (clientPath </> "fsharp" </> "*.fsx") ++ sharedFile

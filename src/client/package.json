@@ -12,7 +12,8 @@
     "build": "webpack -p",
     "start": "webpack-dev-server",
     "predeploy": "yarn build",
-    "deploy": "gh-pages -d output"
+    "deploy": "gh-pages -d output",
+    "format": "prettier ./*.js --write"
   },
   "devDependencies": {
     "@babel/core": "7.8.4",
