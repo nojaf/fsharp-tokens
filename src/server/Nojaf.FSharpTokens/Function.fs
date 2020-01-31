@@ -15,6 +15,13 @@ open Fantomas
 open Nojaf.FSharpTokens.Shared
 
 module GetTokens =
+    let private decodeTokenRequest : Decoder<GetTokensRequest> =
+        Decode.object
+            (fun get ->
+                { Defines = get.Required.Field "defines" (Decode.list Decode.string)
+                  SourceCode = get.Required.Field "sourceCode" Decode.string }
+            )
+
     let private encodeEnum<'t> (value: 't) = value.ToString() |> Encode.string
 
     let private decodeEnum<'t> (path: string) (token: JsonValue) =
@@ -39,7 +46,7 @@ module GetTokens =
 
     let getTokens (req: HttpRequest) =
         let content = using (new StreamReader(req.Body)) (fun stream -> stream.ReadToEnd())
-        let model = Decode.fromString GetTokensRequest.Decode content
+        let model = Decode.fromString decodeTokenRequest content
         match model with
         | Ok model ->
             let json =

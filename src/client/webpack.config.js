@@ -3,7 +3,6 @@ const webpack = require("webpack");
 const MinifyPlugin = require("terser-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
-const MonacoWebpackPlugin = require("monaco-editor-webpack-plugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 
 function resolve(filePath) {
@@ -47,50 +46,6 @@ const commonPlugins = [
   new HtmlWebpackPlugin({
     filename: resolve("./output/index.html"),
     template: resolve("./public/index.html")
-  }),
-  new MonacoWebpackPlugin({
-    languages: ["fsharp", "javascript", "typescript"],
-    features: [
-      "accessibilityHelp",
-      "bracketMatching",
-      "caretOperations",
-      "clipboard",
-      "codelens",
-      "colorDetector",
-      "comment",
-      "contextmenu",
-      // 'coreCommands',
-      "cursorUndo",
-      // 'dnd',
-      "find",
-      // 'folding',
-      // 'format',
-      "gotoDeclarationCommands",
-      "gotoDeclarationMouse",
-      "gotoError",
-      "gotoLine",
-      "hover",
-      "inPlaceReplace",
-      "inspectTokens",
-      // 'iPadShowKeyboard',
-      "linesOperations",
-      "links",
-      "multicursor",
-      "parameterHints",
-      // 'quickCommand',
-      // 'quickFixCommands',
-      // 'quickOutline',
-      // 'referenceSearch',
-      // 'rename',
-      "smartSelect",
-      // 'snippets',
-      "suggest",
-      "toggleHighContrast",
-      "toggleTabFocusMode",
-      "transpose",
-      "wordHighlighter",
-      "wordOperations"
-    ]
   })
 ];
 

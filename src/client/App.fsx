@@ -134,6 +134,12 @@ let init _ =
       IsLoading = false
       Version = "??" }, cmd
 
+let private encodeGetTokensRequest (value: Shared.GetTokensRequest) :JsonValue =
+    Encode.object [
+        "defines", (value.Defines |> List.map Encode.string |> List.toArray |> Encode.array)
+        "sourceCode", Encode.string value.SourceCode
+    ]
+
 let getTokens ({ Defines = defines; Source = source }) : JS.Promise<string> = //import "getTokens" "./api"
     let url = sprintf "%s/%s" backendRoot "get-tokens"
         
@@ -142,7 +148,7 @@ let getTokens ({ Defines = defines; Source = source }) : JS.Promise<string> = //
         |> Array.toList
 
     let model: Shared.GetTokensRequest = { Defines = defines; SourceCode = source }
-    let json = Encode.toString 4 (Shared.GetTokensRequest.Encode model)
+    let json = Encode.toString 4 (encodeGetTokensRequest model)
         
     fetch url [RequestProperties.Body (!^ json); RequestProperties.Method HttpMethod.POST]
     |> Promise.bind (fun res -> res.text())

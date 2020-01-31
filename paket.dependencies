@@ -19,18 +19,22 @@ nuget Thoth.Json
 group server
 storage:none
 source: https://api.nuget.org/v3/index.json 
-framework: netcoreapp3.0
+framework: netcoreapp3.1
 
 nuget FSharp.Data
-nuget Microsoft.NET.Sdk.Functions 3.0.1
+nuget Microsoft.NET.Sdk.Functions
 nuget FSharp.Compiler.Service 33.0.0
 nuget Thoth.Json.Net
-github fsprojects/fantomas /src/Fantomas/FormatConfig.fs
-github fsprojects/fantomas /src/Fantomas/Dbg.fs
-github fsprojects/fantomas /src/Fantomas/TokenParserBoolExpr.fs
-github fsprojects/fantomas /src/Fantomas/TokenParser.fs
-github fsprojects/fantomas /src/Fantomas/TriviaTypes.fs
-github fsprojects/fantomas /src/Fantomas/Utils.fs
+
+github nojaf/fantomas:trivia-tool /src/Fantomas/SourceOrigin.fs
+github nojaf/fantomas:trivia-tool /src/Fantomas/Version.fs
+github nojaf/fantomas:trivia-tool /src/Fantomas/Dbg.fs
+github nojaf/fantomas:trivia-tool /src/Fantomas/Utils.fs
+github nojaf/fantomas:trivia-tool /src/Fantomas/FormatConfig.fs
+github nojaf/fantomas:trivia-tool /src/Fantomas/TokenParserBoolExpr.fs
+github nojaf/fantomas:trivia-tool /src/Fantomas/TokenParser.fs
+github nojaf/fantomas:trivia-tool /src/Fantomas/TriviaTypes.fs
+
 
 group build
 storage:none

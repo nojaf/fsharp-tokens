@@ -1,76 +1,80 @@
-import React from "react";
-import MonacoEditor from "react-monaco-editor";
+import React, { useRef, useState, useEffect } from "react";
+import { ControlledEditor as MonacoEditor } from "@monaco-editor/react";
 import PropTypes from "prop-types";
-import ReactResizeDetector from "react-resize-detector";
 
-class Editor extends React.Component {
-  editor = null;
-
-  constructor(props) {
-    super(props);
-  }
-
-  editorDidMount = (editor, monaco) => {
-    this.props.editorDidMount();
-    if (this.props.getEditor !== null)
-        this.props.getEditor(editor);
-    this.editor = editor;
-  };
-
-  onChange = (newValue, e) => {
-    this.props.onChange(newValue);
-  };
-
-  onResize = () => {
-    if (this.editor !== null) this.editor.layout();
-  };
-
-  render() {
-    const options = {
-      selectOnLineNumbers: true,
-      lineNumbers: true,
-      theme: "vs-light",
-      readOnly: this.props.isReadOnly,
-      renderWhitespace: "all",
-      minimap: {
-        enabled: false
-      }
+const useEventListener = (target, type, listener, ...options) => {
+  useEffect(() => {
+    target.addEventListener(type, listener, ...options);
+    return () => {
+      target.removeEventListener(type, listener, ...options);
     };
-    return (
-      <div style={{ height: "100%", overflow: "hidden" }}>
-        <ReactResizeDetector
-          handleWidth
-          handleHeight
-          onResize={this.onResize}
-        />
-        <MonacoEditor
-          language={this.props.language}
-          value={this.props.value}
-          options={options}
-          onChange={this.onChange}
-          editorDidMount={this.editorDidMount}
-        />
-      </div>
-    );
-  }
-}
+  }, [target, type, listener, options]);
+};
 
-function noop() {}
+const Editor = ({ onChange, language, getEditor, value, isReadOnly }) => {
+  const editorRef = useRef(null);
+
+  function selectRange(ev) {
+    if (ev.detail && editorRef.current) {
+      const range = ev.detail;
+      const editor = editorRef.current;
+      editor.setSelection(range);
+      editor.revealRangeInCenter(range, 0);
+    }
+  }
+
+  useEventListener(window, "trivia_select_range", selectRange);
+
+  const options = {
+    readOnly: isReadOnly,
+    selectOnLineNumbers: true,
+    lineNumbers: true,
+    theme: "vs-light",
+    renderWhitespace: "all",
+    minimap: {
+      enabled: false
+    }
+  };
+  const handleEditorChange = (ev, value) => {
+    if (onChange) {
+      onChange(value);
+    }
+    return value;
+  };
+
+  function handleEditorDidMount(kel, editor) {
+    editorRef.current = editor;
+    if (getEditor) {
+      getEditor(editor);
+    }
+  }
+
+  return (
+      <div style={{ height: "100%", overflow: "hidden" }}>
+<MonacoEditor
+  height={"100%"}
+  language={language}
+  editorDidMount={handleEditorDidMount}
+  value={value}
+  onChange={handleEditorChange}
+  options={options}
+  />
+  </div>
+);
+};
 
 Editor.propTypes = {
   onChange: PropTypes.func,
   value: PropTypes.string,
   language: PropTypes.string,
   isReadOnly: PropTypes.bool,
-  editorDidMount: PropTypes.func
+  getEditor: PropTypes.func
 };
 
 Editor.defaultProps = {
-  onChange: noop,
   value: "",
   language: "fsharp",
-  isReadOnly: false,
-  editorDidMount: noop
+  isReadOnly: false
 };
 
 export default Editor;
