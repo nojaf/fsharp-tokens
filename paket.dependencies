@@ -44,4 +44,4 @@ nuget Fake.Core.Target
 nuget Fake.IO.FileSystem
 nuget Fake.JavaScript.Yarn
 nuget Fake.DotNet.Paket
-nuget Fantomas
+nuget Fantomas 3.2.0-beta-002
