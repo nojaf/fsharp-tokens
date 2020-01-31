@@ -111,7 +111,7 @@ let private backendRoot =
         #if DEBUG
         "http://localhost:7071/api"
         #else
-        "https://fsharp-tokens.azurewebsites.net/api"
+        "https://azfun-fsharptokens.azurewebsites.net/api"
         #endif
 
 let private getVersion () =

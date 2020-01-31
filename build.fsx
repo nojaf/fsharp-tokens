@@ -12,10 +12,13 @@ open Fantomas.FakeHelpers
 open Fantomas.FormatConfig
 open System
 
+let pwd = Shell.pwd()
 let clientPath = Path.getFullName "./src/client"
 let setYarnWorkingDirectory (args: Yarn.YarnParams) = { args with WorkingDirectory = clientPath }
 let serverPath = Path.getFullName "./src/server/Nojaf.FSharpTokens"
 let sharedFile = Path.getFullName "./src/Shared.fs"
+let publishPath = pwd </> "deploy"
+let serverProject = (serverPath </> "Nojaf.FSharpTokens.fsproj")
 
 module Paket =
     let private runCmd cmd args =
@@ -30,7 +33,8 @@ module Paket =
 Target.create "Clean" (fun _ ->
     Shell.rm_rf (clientPath </> ".fable")
     Shell.rm_rf (serverPath </> "bin")
-    Shell.rm_rf (serverPath </> "obj"))
+    Shell.rm_rf (serverPath </> "obj")
+    Shell.rm_rf publishPath)
 
 Target.create "Yarn" (fun _ -> Yarn.installPureLock setYarnWorkingDirectory)
 
@@ -94,6 +98,55 @@ Target.create "Format" (fun _ ->
     |> printfn "Formatted F# files: %A"
 
     Yarn.exec "format" setYarnWorkingDirectory)
+
+module Azure =
+    let az parameters =
+        let azPath = ProcessUtils.findPath [] "az"
+        CreateProcess.fromRawCommand azPath parameters
+        |> Proc.run
+        |> ignore
+
+    let func parameters =
+        let funcPath = ProcessUtils.findPath [] "func"
+        CreateProcess.fromRawCommand funcPath parameters
+        |> CreateProcess.withWorkingDirectory serverPath
+        |> Proc.run
+        |> ignore
+
+Target.create "DeployServer" (fun _ ->
+//    let resourceGroup = Environment.environVar "AZ_RESOURCE_GROUP"
+//    let armFile = pwd </> "infrastructure" </> "azuredeploy.json"
+//    let functionappName = Environment.environVar "AZ_FUNCTIONAPP"
+//    let serverFarmName = Environment.environVar "AZ_SERVERFARM"
+//    let applicationInsightsName = Environment.environVar "AZ_APPINSIGHTS"
+//    let storageName = Environment.environVar "AZ_STORAGE"
+//    let corsUrl = Environment.environVar "AZ_CORS"
+//
+//    Azure.az ["group";"deployment"; "validate";"-g"
+//              resourceGroup; "--template-file"; armFile
+//              "--parameters"; (sprintf "functionappName=%s" functionappName)
+//              "--parameters"; (sprintf "serverFarmName=%s" serverFarmName)
+//              "--parameters"; (sprintf "applicationInsightsName=%s" applicationInsightsName)
+//              "--parameters"; (sprintf "storageName=%s" storageName)
+//              "--parameters"; (sprintf "appUrl=%s" corsUrl)]
+//
+//    Azure.az ["group";"deployment"; "create";"-g"
+//              resourceGroup; "--template-file"; armFile
+//              "--parameters"; (sprintf "functionappName=%s" functionappName)
+//              "--parameters"; (sprintf "serverFarmName=%s" serverFarmName)
+//              "--parameters"; (sprintf "applicationInsightsName=%s" applicationInsightsName)
+//              "--parameters"; (sprintf "storageName=%s" storageName)
+//              "--parameters"; (sprintf "appUrl=%s" corsUrl)]
+
+    DotNet.publish (fun config -> { config with
+                                        Configuration = DotNet.BuildConfiguration.Release
+                                        OutputPath = Some publishPath }) serverProject
+
+    Zip.createZip "./deploy" "func.zip" "" Zip.DefaultZipLevel false (!! "./deploy/*.*" ++ "./deploy/**/*.*")
+    Shell.mv "func.zip" "./deploy/func.zip"
+
+    // Azure.az ["functionapp";"deployment";"source";"config-zip";"-g";resourceGroup;"-n";functionappName;"--src";"./deploy/func.zip"]
+)
 
 Target.create "Deploy" (fun _ -> Yarn.exec "deploy" setYarnWorkingDirectory)
 
