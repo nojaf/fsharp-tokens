@@ -90,7 +90,7 @@ Target.create "Format" (fun _ ->
         { FormatConfig.Default with
               KeepNewlineAfter = true }
 
-    let fsharpFiles = !!(serverPath </> "*.fs") ++ (clientPath </> "fsharp" </> "*.fsx") ++ sharedFile
+    let fsharpFiles = !!(serverPath </> "*.fs") ++ (clientPath </> "*.fsx") ++ sharedFile
 
     fsharpFiles
     |> formatCode fantomasConfig
