@@ -1329,12 +1329,12 @@ NUGET
       NETStandard.Library (>= 1.6.1)
       Newtonsoft.Json (>= 10.0.2)
 GITHUB
-  remote: nojaf/fantomas
-    src/Fantomas/Dbg.fs (e4c153fc4c9ee767cea69368e6c0a0a17d633f13)
-    src/Fantomas/FormatConfig.fs (e4c153fc4c9ee767cea69368e6c0a0a17d633f13)
-    src/Fantomas/SourceOrigin.fs (e4c153fc4c9ee767cea69368e6c0a0a17d633f13)
-    src/Fantomas/TokenParser.fs (e4c153fc4c9ee767cea69368e6c0a0a17d633f13)
-    src/Fantomas/TokenParserBoolExpr.fs (e4c153fc4c9ee767cea69368e6c0a0a17d633f13)
-    src/Fantomas/TriviaTypes.fs (e4c153fc4c9ee767cea69368e6c0a0a17d633f13)
-    src/Fantomas/Utils.fs (e4c153fc4c9ee767cea69368e6c0a0a17d633f13)
-    src/Fantomas/Version.fs (e4c153fc4c9ee767cea69368e6c0a0a17d633f13)
+  remote: fsprojects/fantomas
+    src/Fantomas/Dbg.fs (c21db7188f33bfe4646797ee75f1edeb4dfc8a12)
+    src/Fantomas/FormatConfig.fs (c21db7188f33bfe4646797ee75f1edeb4dfc8a12)
+    src/Fantomas/SourceOrigin.fs (c21db7188f33bfe4646797ee75f1edeb4dfc8a12)
+    src/Fantomas/TokenParser.fs (c21db7188f33bfe4646797ee75f1edeb4dfc8a12)
+    src/Fantomas/TokenParserBoolExpr.fs (c21db7188f33bfe4646797ee75f1edeb4dfc8a12)
+    src/Fantomas/TriviaTypes.fs (c21db7188f33bfe4646797ee75f1edeb4dfc8a12)
+    src/Fantomas/Utils.fs (c21db7188f33bfe4646797ee75f1edeb4dfc8a12)
+    src/Fantomas/Version.fs (c21db7188f33bfe4646797ee75f1edeb4dfc8a12)

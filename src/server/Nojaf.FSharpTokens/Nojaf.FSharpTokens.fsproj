@@ -5,35 +5,35 @@
     <AzureFunctionsVersion>v3</AzureFunctionsVersion>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="..\..\..\paket-files\server\nojaf\fantomas\src\Fantomas\SourceOrigin.fs">
+    <Compile Include="..\..\..\paket-files\server\fsprojects\fantomas\src\Fantomas\SourceOrigin.fs">
       <Paket>True</Paket>
       <Link>paket-files/SourceOrigin.fs</Link>
     </Compile>
-    <Compile Include="..\..\..\paket-files\server\nojaf\fantomas\src\Fantomas\Version.fs">
+    <Compile Include="..\..\..\paket-files\server\fsprojects\fantomas\src\Fantomas\Version.fs">
       <Paket>True</Paket>
       <Link>paket-files/Version.fs</Link>
     </Compile>
-    <Compile Include="..\..\..\paket-files\server\nojaf\fantomas\src\Fantomas\Dbg.fs">
+    <Compile Include="..\..\..\paket-files\server\fsprojects\fantomas\src\Fantomas\Dbg.fs">
       <Paket>True</Paket>
       <Link>paket-files/Dbg.fs</Link>
     </Compile>
-    <Compile Include="..\..\..\paket-files\server\nojaf\fantomas\src\Fantomas\Utils.fs">
+    <Compile Include="..\..\..\paket-files\server\fsprojects\fantomas\src\Fantomas\Utils.fs">
       <Paket>True</Paket>
       <Link>paket-files/Utils.fs</Link>
     </Compile>
-    <Compile Include="..\..\..\paket-files\server\nojaf\fantomas\src\Fantomas\FormatConfig.fs">
+    <Compile Include="..\..\..\paket-files\server\fsprojects\fantomas\src\Fantomas\FormatConfig.fs">
       <Paket>True</Paket>
       <Link>paket-files/FormatConfig.fs</Link>
     </Compile>
-    <Compile Include="..\..\..\paket-files\server\nojaf\fantomas\src\Fantomas\TokenParserBoolExpr.fs">
+    <Compile Include="..\..\..\paket-files\server\fsprojects\fantomas\src\Fantomas\TokenParserBoolExpr.fs">
       <Paket>True</Paket>
       <Link>paket-files/TokenParserBoolExpr.fs</Link>
     </Compile>
-    <Compile Include="..\..\..\paket-files\server\nojaf\fantomas\src\Fantomas\TriviaTypes.fs">
+    <Compile Include="..\..\..\paket-files\server\fsprojects\fantomas\src\Fantomas\TriviaTypes.fs">
       <Paket>True</Paket>
       <Link>paket-files/TriviaTypes.fs</Link>
     </Compile>
-    <Compile Include="..\..\..\paket-files\server\nojaf\fantomas\src\Fantomas\TokenParser.fs">
+    <Compile Include="..\..\..\paket-files\server\fsprojects\fantomas\src\Fantomas\TokenParser.fs">
       <Paket>True</Paket>
       <Link>paket-files/TokenParser.fs</Link>
     </Compile>

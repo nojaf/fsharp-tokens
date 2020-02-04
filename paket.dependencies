@@ -26,14 +26,14 @@ nuget Microsoft.NET.Sdk.Functions
 nuget FSharp.Compiler.Service 33.0.0
 nuget Thoth.Json.Net
 
-github nojaf/fantomas:trivia-tool /src/Fantomas/SourceOrigin.fs
-github nojaf/fantomas:trivia-tool /src/Fantomas/Version.fs
-github nojaf/fantomas:trivia-tool /src/Fantomas/Dbg.fs
-github nojaf/fantomas:trivia-tool /src/Fantomas/Utils.fs
-github nojaf/fantomas:trivia-tool /src/Fantomas/FormatConfig.fs
-github nojaf/fantomas:trivia-tool /src/Fantomas/TokenParserBoolExpr.fs
-github nojaf/fantomas:trivia-tool /src/Fantomas/TokenParser.fs
-github nojaf/fantomas:trivia-tool /src/Fantomas/TriviaTypes.fs
+github fsprojects/fantomas:c21db7188f33bfe4646797ee75f1edeb4dfc8a12 /src/Fantomas/SourceOrigin.fs
+github fsprojects/fantomas:c21db7188f33bfe4646797ee75f1edeb4dfc8a12 /src/Fantomas/Version.fs
+github fsprojects/fantomas:c21db7188f33bfe4646797ee75f1edeb4dfc8a12 /src/Fantomas/Dbg.fs
+github fsprojects/fantomas:c21db7188f33bfe4646797ee75f1edeb4dfc8a12 /src/Fantomas/Utils.fs
+github fsprojects/fantomas:c21db7188f33bfe4646797ee75f1edeb4dfc8a12 /src/Fantomas/FormatConfig.fs
+github fsprojects/fantomas:c21db7188f33bfe4646797ee75f1edeb4dfc8a12 /src/Fantomas/TokenParserBoolExpr.fs
+github fsprojects/fantomas:c21db7188f33bfe4646797ee75f1edeb4dfc8a12 /src/Fantomas/TokenParser.fs
+github fsprojects/fantomas:c21db7188f33bfe4646797ee75f1edeb4dfc8a12 /src/Fantomas/TriviaTypes.fs
 
 
 group build
