@@ -188,7 +188,8 @@ let private restoreModelFromUrl() =
             | Result.Ok u ->
                 { initialModel with
                       Source = u.SourceCode
-                      Defines = String.concat " " u.Defines }, Some u
+                      Defines = String.concat " " u.Defines
+                      IsLoading = true }, Some u
             | Error err ->
                 printfn "%A" err
                 initialModel, None
@@ -359,7 +360,7 @@ let private tokenDetailRow label content =
         [ td [] [ strong [] [ str label ] ]
           td [] [ content ] ]
 
-let tokenDetail model dispatch index token =
+let tokenDetail dispatch index token =
     let className =
         tokenNameClass token |> sprintf "tag is-large %s"
 
@@ -392,7 +393,7 @@ let details model dispatch =
         let details =
             model.Tokens
             |> Array.filter (fun t -> t.LineNumber = activeLine)
-            |> Array.mapi (tokenDetail model dispatch)
+            |> Array.mapi (tokenDetail dispatch)
 
         div [ Id "details" ]
             [ h2 [ Class "title is-4" ]
