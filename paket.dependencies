@@ -23,17 +23,17 @@ framework: netcoreapp3.1
 
 nuget FSharp.Data
 nuget Microsoft.NET.Sdk.Functions
-nuget FSharp.Compiler.Service 34.0.1
+nuget FSharp.Compiler.Service 34.1.0
 nuget Thoth.Json.Net
 
-github fsprojects/fantomas:86aa32a7ed353fe3ccc50dc75272045810189b23 /src/Fantomas/SourceOrigin.fs
-github fsprojects/fantomas:86aa32a7ed353fe3ccc50dc75272045810189b23 /src/Fantomas/Version.fs
-github fsprojects/fantomas:86aa32a7ed353fe3ccc50dc75272045810189b23 /src/Fantomas/Dbg.fs
-github fsprojects/fantomas:86aa32a7ed353fe3ccc50dc75272045810189b23 /src/Fantomas/Utils.fs
-github fsprojects/fantomas:86aa32a7ed353fe3ccc50dc75272045810189b23 /src/Fantomas/FormatConfig.fs
-github fsprojects/fantomas:86aa32a7ed353fe3ccc50dc75272045810189b23 /src/Fantomas/TokenParserBoolExpr.fs
-github fsprojects/fantomas:86aa32a7ed353fe3ccc50dc75272045810189b23 /src/Fantomas/TokenParser.fs
-github fsprojects/fantomas:86aa32a7ed353fe3ccc50dc75272045810189b23 /src/Fantomas/TriviaTypes.fs
+github fsprojects/fantomas:2f857886721e8057ab9006b87718306f0494f993 /src/Fantomas/SourceOrigin.fs
+github fsprojects/fantomas:2f857886721e8057ab9006b87718306f0494f993 /src/Fantomas/Version.fs
+github fsprojects/fantomas:2f857886721e8057ab9006b87718306f0494f993 /src/Fantomas/Dbg.fs
+github fsprojects/fantomas:2f857886721e8057ab9006b87718306f0494f993 /src/Fantomas/Utils.fs
+github fsprojects/fantomas:2f857886721e8057ab9006b87718306f0494f993 /src/Fantomas/FormatConfig.fs
+github fsprojects/fantomas:2f857886721e8057ab9006b87718306f0494f993 /src/Fantomas/TokenParserBoolExpr.fs
+github fsprojects/fantomas:2f857886721e8057ab9006b87718306f0494f993 /src/Fantomas/TokenParser.fs
+github fsprojects/fantomas:2f857886721e8057ab9006b87718306f0494f993 /src/Fantomas/TriviaTypes.fs
 
 
 group build
